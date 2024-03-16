@@ -1,5 +1,5 @@
 services:
-  predictions:
+  create-predictions:
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,3 +10,4 @@ services:
       - ./.env
     ports:
       - "8000:8000"
+    network_mode: 06-trytumor_default

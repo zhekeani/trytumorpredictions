@@ -21,7 +21,14 @@ class PredictionsService:
     async def create_prediction(self, image):
 
         # Define a dictionary to map predicted class indices to class labels
-        class_labels = {0: "glioma", 1: "meningioma", 2: "notumor", 3: "pituitary"}
+        class_labels = {0: "glioma", 1: "meningioma", 2: "noTumor", 3: "pituitary"}
+
+        class_dict = {
+            "glioma": None,
+            "meningioma": None,
+            "noTumor": None,
+            "pituitary": None,
+        }
 
         # Read image file contents
         contents = await image.read()
@@ -38,14 +45,11 @@ class PredictionsService:
             predicted_classes = []
             for i, class_prob in enumerate(prediction[0]):
                 class_label = class_labels[i]
-                prediction_percentage = class_prob * 100
-                predicted_classes.append(
-                    {
-                        "class": class_label,
-                        "prediction_percentage": f"{prediction_percentage:.5f}",
-                    }
-                )
-            return {"predictions": predicted_classes}
+                prediction_percentage = round(class_prob * 100, 5)
+
+                class_dict[class_label] = prediction_percentage
+
+            return class_dict
         else:  # Regression or binary classification
             predicted_value = prediction[0][0]
             return {"predicted_value": predicted_value}
